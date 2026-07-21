@@ -11,7 +11,10 @@ export default function Hero() {
   // Fallback slides if API has no banners
   const fallbackSlides = useMemo(
     () => [
-      ],
+      '/p1.png',
+      '/p2.png',
+      '/p3.png',
+    ],
     []
   );
 

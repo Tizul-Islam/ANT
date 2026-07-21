@@ -211,27 +211,27 @@
   "reviews": [
     {
       "id": 1,
-      "avatar": "https://i.pravatar.cc/64?img=1",
-      "name": "Mehedi Hasan Shuvo",
-      "role": "Homeowner",
-      "rating": 4,
-      "text": "This organic cleaner has completely transformed the way I clean my kitchen. The natural formula is incredibly effective and the scent is so fresh."
+      "avatar": "https://i.pravatar.cc/64?img=11",
+      "name": "Mahmudul Hasan",
+      "role": "গাড়ির মালিক, ঢাকা",
+      "rating": 5,
+      "text": "ANT platform থেকে আমার গাড়ির ব্রেক প্যাড এবং ফিল্টার অর্ডার করেছিলাম। পণ্যের মান অত্যন্ত ভালো এবং ডেলিভারি সময়মতো পেয়েছি। দাম তুলনামূলকভাবে কম এবং পণ্য সম্পূর্ণ আসল। আগামীতেও এখান থেকেই কিনব।"
     },
     {
       "id": 2,
-      "avatar": "https://i.pravatar.cc/64?img=2",
-      "name": "Rafatul Islam",
-      "role": "Parent",
-      "rating": 3,
-      "text": "Very powerful and safe! It helped us clean our home without worrying about harsh chemicals. A few stains were stubborn, but a second application did the trick. Support was also very helpful."
+      "avatar": "https://i.pravatar.cc/64?img=22",
+      "name": "Rafiqul Islam",
+      "role": "মোটরসাইকেল মেকানিক, চট্টগ্রাম",
+      "rating": 4,
+      "text": "আমি একজন মেকানিক হিসেবে প্রতিনিয়ত বিভিন্ন পার্টস কিনি। ANT-তে পার্টসের বিশাল সংগ্রহ আছে এবং দামও ন্যায্য। QR scanner দিয়ে পণ্য ভেরিফাই করার ফিচারটি দারুণ — নকল পণ্যের ঝামেলা থেকে মুক্তি পেয়েছি।"
     },
     {
       "id": 3,
-      "avatar": "https://i.pravatar.cc/64?img=3",
-      "name": "Sabbir Tanvir",
-      "role": "Small Business Owner",
-      "rating": 4,
-      "text": "We've tried multiple cleaners for our office, but this one stands out with its eco-friendly ingredients and powerful cleaning action. Highly recommended for any business!"
+      "avatar": "https://i.pravatar.cc/64?img=33",
+      "name": "Sabbir Ahmed",
+      "role": "গ্যারেজ মালিক, সিলেট",
+      "rating": 5,
+      "text": "আমার গ্যারেজের জন্য বাল্ক অর্ডার করেছিলাম — ইঞ্জিন অয়েল, স্পার্ক প্লাগ, এবং বেল্ট। সবকিছু অরিজিনাল পেয়েছি। Nearby shop ফিচারের মাধ্যমে আমার এলাকার সাপ্লায়ারও খুঁজে পেয়েছি। ANT সত্যিই অটো পার্টস ইন্ডাস্ট্রিতে বিপ্লব এনেছে।"
     }
   ],
   "contact": {

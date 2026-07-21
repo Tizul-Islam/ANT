@@ -3,10 +3,13 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import ProductCard from '../components/productCard.jsx';
 import ListProductCard from '../components/ListProductCard.jsx';
+import { ProductSkeletonCard } from '../components/cards/SkeletonCards.jsx';
 import { Api_Base_Url } from '../config/api.js';
 import { getCurrentUser } from '../utils/auth.js';
+import useTitle from '../utils/useTitle.js';
 
 export default function Training() {
+  useTitle('Training');
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -240,11 +243,20 @@ export default function Training() {
 
         {/* Loading State */}
         {loading && (
-          <div className="flex justify-center items-center py-20">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-              <p className="text-gray-600">Loading training courses...</p>
-            </div>
+          <div className="mb-8">
+            {view === "grid" ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <ProductSkeletonCard key={i} />
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <ProductSkeletonCard key={i} isList={true} />
+                ))}
+              </div>
+            )}
           </div>
         )}
 

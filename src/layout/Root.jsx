@@ -6,6 +6,8 @@ import Footer from "../components/sharedComponents/Footer";
 import Navbar from "../components/sharedComponents/Navbar";
 
 
+import ScrollToTop from "react-scroll-to-top";
+
 const Root = () => {
   const location = useLocation();
 
@@ -28,6 +30,11 @@ const Root = () => {
     <Navbar />
     <Outlet />
     <Footer />
+    <ScrollToTop 
+      smooth 
+      color="#16a34a" 
+      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0' }}
+    />
     <ToastContainer
       position="top-right"
       autoClose={5000}

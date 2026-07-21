@@ -1,7 +1,9 @@
 import React from 'react';
 import { useSiteSettings } from '../config/sitesetting.js';
+import useTitle from '../utils/useTitle.js';
 
 function About() {
+  useTitle('About Us');
   const settings = useSiteSettings();
 
   const resolveAsset = (url, fallback) => {

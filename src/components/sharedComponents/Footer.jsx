@@ -39,12 +39,12 @@ const Footer = () => {
 
           {/* Shops */}
           <div>
-            <h4 className="text-lg font-semibold">Shops</h4>
+            <h4 className="text-lg font-semibold">Categories</h4>
             <ul className="mt-3 space-y-2 text-gray-700">
-              <li><Link to="/shops" className="hover:text-green-600">Machine center</Link></li>
-              <li><Link to="/shops" className="hover:text-green-600">BD Shops</Link></li>
-              <li><Link to="/shops" className="hover:text-green-600">USA</Link></li>
-              <li><Link to="/shops" className="hover:text-green-600">Dhaka</Link></li>
+              <li><Link to="/product" className="hover:text-green-600">Engine Parts</Link></li>
+              <li><Link to="/product" className="hover:text-green-600">Brake System</Link></li>
+              <li><Link to="/product" className="hover:text-green-600">Electrical Parts</Link></li>
+              <li><Link to="/product" className="hover:text-green-600">Body & Accessories</Link></li>
             </ul>
           </div>
 
@@ -52,10 +52,10 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-semibold">Follow us</h4>
             <ul className="mt-3 space-y-2 text-gray-700">
-              <li><a href="#" className="hover:text-green-600">Facebook</a></li>
-              <li><a href="#" className="hover:text-green-600">Twitter</a></li>
-              <li><a href="#" className="hover:text-green-600">WhatsApp</a></li>
-              <li><a href="#" className="hover:text-green-600">Instagram</a></li>
+              <li><a href="https://www.facebook.com/ant2025" target="_blank" rel="noopener noreferrer" className="hover:text-green-600">Facebook</a></li>
+              <li><a href="https://wa.me/8801956956200" target="_blank" rel="noopener noreferrer" className="hover:text-green-600">WhatsApp</a></li>
+              <li><a href="https://www.youtube.com/@ant2025" target="_blank" rel="noopener noreferrer" className="hover:text-green-600">YouTube</a></li>
+              <li><a href="https://www.instagram.com/ant2025" target="_blank" rel="noopener noreferrer" className="hover:text-green-600">Instagram</a></li>
             </ul>
           </div>
         </div>

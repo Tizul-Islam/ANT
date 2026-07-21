@@ -20,7 +20,7 @@ function WhyChoseUs() {
                                     </svg>
                                     <p className="text-green-500 text-lg sm:text-xl font-semibold">High-Quality Branded Auto Parts</p>
                                 </div>
-                                <p className="text-neutral-500 text-sm sm:text-base">Discover Our Exclusive Deals</p>
+                                <p className="text-neutral-500 text-sm sm:text-base">আমরা শুধুমাত্র আন্তর্জাতিক মানের ব্র্যান্ডেড অটো পার্টস সরবরাহ করি। প্রতিটি পণ্য সত্যতা যাচাই করে বিক্রয় করা হয়, যা আপনার গাড়িকে সর্বোচ্চ নিরাপদ রাখে।</p>
                             </div>
 
                             {/* Feature 2 */}
@@ -36,7 +36,7 @@ function WhyChoseUs() {
                                     </svg>
                                     <p className="text-green-500 text-lg sm:text-xl font-semibold">Fast Shipping</p>
                                 </div>
-                                <p className="text-neutral-500 text-sm sm:text-base">Discover Our Exclusive Deals</p>
+                                <p className="text-neutral-500 text-sm sm:text-base">সারাদেশে দ্রুত ও নিরাপদ ডেলিভারি নিশ্চিত করা হয়। অর্ডার দেওয়ার ২৪-৪৮ ঘণ্টার মধ্যে আপনার দোরগোড়ায় পৌঁছে দেওয়া আমাদের লক্ষ্য।</p>
                             </div>
 
                             {/* Feature 3 */}
@@ -50,7 +50,7 @@ function WhyChoseUs() {
                                     </svg>
                                     <p className="text-green-500 text-lg sm:text-xl font-semibold">90-Day Returns</p>
                                 </div>
-                                <p className="text-neutral-500 text-sm sm:text-base">Discover Our Exclusive Deals</p>
+                                <p className="text-neutral-500 text-sm sm:text-base">পণ্যে কোনো সমস্যা থাকলে ৯০ দিনের মধ্যে ফেরত দেওয়ার সুযোগ রয়েছে। আমাদের কাস্টমার সার্ভিস টিম সপ্তাহের ৭ দিন আপনার পাশে আছে।</p>
                             </div>
                         </div>
                     </div>

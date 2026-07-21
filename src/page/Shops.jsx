@@ -2,8 +2,10 @@ import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Api_Base_Url } from '../config/api';
+import useTitle from '../utils/useTitle.js';
 
 export default function Shops() {
+  useTitle('Nearby Shops');
   const [shops, setShops] = useState([]);
   const [divisions, setDivisions] = useState([]);
   const [districts, setDistricts] = useState([]);

@@ -5,9 +5,12 @@ import { toast } from 'react-toastify';
 import ProductCard from '../components/productCard.jsx';
 import ListProductCard from '../components/ListProductCard.jsx';
 import { Api_Base_Url } from '../config/api.js';
+import { getCachedProducts, fetchProducts, invalidateProductsCache } from '../api/products.js';
+import useTitle from '../utils/useTitle.js';
 import { getCurrentUser } from '../utils/auth.js';
 
 export default function Product() {
+  useTitle('Products');
   const location = useLocation();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);

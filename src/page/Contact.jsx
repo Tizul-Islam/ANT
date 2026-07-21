@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useSiteSettings } from '../config/sitesetting';
+import useTitle from '../utils/useTitle.js';
 
 export default function Contact() {
+  useTitle('Contact');
   const settings = useSiteSettings();
   
   const [formData, setFormData] = useState({

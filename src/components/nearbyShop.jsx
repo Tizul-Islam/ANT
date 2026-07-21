@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Api_Base_Url } from '../config/api';
 
+import { ShopSkeletonCard } from './cards/SkeletonCards.jsx';
+
 export default function NearbyShop() {
   const [shops, setShops] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,8 +50,10 @@ export default function NearbyShop() {
         </div>
 
         {loading ? (
-          <div className="flex justify-center items-center h-32">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <ShopSkeletonCard key={i} />
+            ))}
           </div>
         ) : shops.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
