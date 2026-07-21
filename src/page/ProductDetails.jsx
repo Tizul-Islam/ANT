@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { Api_Base_Url } from '../config/api';
 import { isAuthenticated, getCurrentUser } from '../utils/auth.js';
 import QRScanner from '../components/QRScanner';
+import SellerListing from '../components/SellerListing';
 
 export default function ProductDetails() {
     const [product, setProduct] = useState(null);
@@ -644,66 +645,8 @@ export default function ProductDetails() {
 
 
 
-                                {/* Action Buttons */}
-                                {userRole === 'shop_owner' ? (
-                                    <div className="space-y-4">
-                                        {/* Quantity (only for shop owner) */}
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-sm font-semibold text-zinc-800">QTY:</span>
-                                            <div className="flex items-center border border-neutral-400 rounded">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => _handleQuantityChange(-1)}
-                                                    className="w-8 h-8 flex items-center justify-center hover:bg-gray-100"
-                                                >
-                                                    <span className="text-lg font-bold">−</span>
-                                                </button>
-                                                <span className="px-3 py-1 text-sm font-medium text-zinc-800 min-w-[32px] text-center">{_quantity}</span>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => _handleQuantityChange(1)}
-                                                    className="w-8 h-8 flex items-center justify-center hover:bg-gray-100"
-                                                >
-                                                    <span className="text-lg font-bold">+</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <button
-                                            type="button"
-                                            onClick={openHoldOverlay}
-                                            disabled={orderLoading}
-                                            className="w-full cursor-pointer py-3 bg-green-600 text-white text-sm font-bold rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                                        >
-                                            {orderLoading ? (
-                                                <>
-                                                    <svg className="animate-spin w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                                    </svg>
-                                                    Placing Order...
-                                                </>
-                                            ) : (
-                                                'ORDER NOW'
-                                            )}
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <div className="space-y-3">
-                                        <button
-                                            type="button"
-                                            onClick={startShopScanner}
-                                            className="w-full cursor-pointer py-3 bg-green-600 text-white text-sm font-bold rounded hover:bg-green-700"
-                                        >
-                                            SCAN SHOP
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => navigate(`/view-in-shop/${product.id}`)}
-                                            className="w-full py-3 bg-zinc-800 text-white text-sm font-bold cursor-pointer rounded hover:bg-zinc-900"
-                                        >
-                                            VIEW IN SHOP
-                                        </button>
-                                    </div>
-                                )}
+                                {/* Multi-Vendor Seller Listing */}
+                                <SellerListing product={product} />
 
                                 {/* Description */}
                                 {product?.description && (

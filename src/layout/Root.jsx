@@ -4,8 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Footer from "../components/sharedComponents/Footer";
 import Navbar from "../components/sharedComponents/Navbar";
-
-
+import CartDrawer from "../components/CartDrawer";
 import ScrollToTop from "react-scroll-to-top";
 
 const Root = () => {
@@ -28,6 +27,7 @@ const Root = () => {
   return (
     <>
     <Navbar />
+    <CartDrawer />
     <Outlet />
     <Footer />
     <ScrollToTop 
