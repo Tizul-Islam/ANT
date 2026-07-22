@@ -50,7 +50,7 @@ export default function AddCar() {
         sellerName: user?.name || 'ANT Dealership',
         sellerEmail: user?.email || 'dealer@ant.com',
         createdAt: new Date().toISOString(),
-        status: 'Pending',
+        status: 'Approved',
         views: 0,
         featured: false,
         // Mock image

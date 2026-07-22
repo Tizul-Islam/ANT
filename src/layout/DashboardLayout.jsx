@@ -19,7 +19,9 @@ import {
   List,
   User,
   Star,
-  FileText
+  FileText,
+  CalendarCheck,
+  TrendingUp
 } from 'lucide-react';
 
 export default function DashboardLayout() {
@@ -38,7 +40,12 @@ export default function DashboardLayout() {
     { name: 'Add Car', to: '/dashboard/add-car', icon: PlusCircle },
     { name: 'My Cars', to: '/dashboard/my-cars', icon: Car },
     { name: 'All Cars', to: '/dashboard/all-cars', icon: List },
+    { name: 'Bookings', to: '/dashboard/bookings', icon: CalendarCheck },
+    { name: 'Reviews', to: '/dashboard/shop-reviews', icon: Star },
+    { name: 'Notifications', to: '/dashboard/notifications', icon: Bell },
+    { name: 'Analytics', to: '/dashboard/shop-analytics', icon: TrendingUp },
     { name: 'Profile', to: '/dashboard/profile', icon: User },
+    { name: 'Settings', to: '/dashboard/settings', icon: Settings },
   ];
 
   const customerLinks = [

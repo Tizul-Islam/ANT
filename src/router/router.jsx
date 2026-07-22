@@ -13,6 +13,7 @@ import Auth from "../page/Auth";
 import Profile from "../page/Profile";
 import ProductDetails from "../page/ProductDetails";
 import Myshop from "../page/Myshop";
+import ViewInShop from "../page/ViewInShop";
 
 import ProtectedRoute from "../components/auth/ProtectedRoute";
 import DashboardRedirect from "../components/DashboardRedirect";
@@ -43,6 +44,11 @@ import Wishlist from "../page/dashboard/Wishlist";
 import AddCar from "../page/dashboard/AddCar";
 import MyCars from "../page/dashboard/MyCars";
 import AllCars from "../page/dashboard/AllCars";
+import EditCar from "../page/dashboard/EditCar";
+import EmployerBookings from "../page/dashboard/EmployerBookings";
+import EmployerReviews from "../page/dashboard/EmployerReviews";
+import EmployerNotifications from "../page/dashboard/EmployerNotifications";
+import EmployerAnalytics from "../page/dashboard/EmployerAnalytics";
 
 // Admin Pages
 import AdminDashboard from "../page/admin/AdminDashboard";
@@ -107,8 +113,13 @@ export const router = createBrowserRouter([
       
       // Employer Routes
       { path: "/dashboard/add-car", element: <ProtectedRoute allowedRoles={['shop_owner', 'admin']}><AddCar /></ProtectedRoute> },
+      { path: "/dashboard/edit-car/:id", element: <ProtectedRoute allowedRoles={['shop_owner']}><EditCar /></ProtectedRoute> },
       { path: "/dashboard/my-cars", element: <ProtectedRoute allowedRoles={['shop_owner']}><MyCars /></ProtectedRoute> },
       { path: "/dashboard/all-cars", element: <ProtectedRoute allowedRoles={['shop_owner']}><AllCars /></ProtectedRoute> },
+      { path: "/dashboard/bookings", element: <ProtectedRoute allowedRoles={['shop_owner']}><EmployerBookings /></ProtectedRoute> },
+      { path: "/dashboard/shop-reviews", element: <ProtectedRoute allowedRoles={['shop_owner']}><EmployerReviews /></ProtectedRoute> },
+      { path: "/dashboard/notifications", element: <ProtectedRoute allowedRoles={['shop_owner']}><EmployerNotifications /></ProtectedRoute> },
+      { path: "/dashboard/shop-analytics", element: <ProtectedRoute allowedRoles={['shop_owner']}><EmployerAnalytics /></ProtectedRoute> },
       { path: "/dashboard/profile", element: <ProtectedRoute allowedRoles={['shop_owner']}><Settings /></ProtectedRoute> },
       
       // Customer Routes

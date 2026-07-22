@@ -65,7 +65,7 @@ export default function MyCars() {
           <p className="text-sm text-zinc-400">Manage your uploaded vehicles.</p>
         </div>
         <Link 
-          to="/myshop/add-car"
+          to="/dashboard/add-car"
           className="bg-indigo-500 hover:bg-indigo-600 text-white font-medium px-4 py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2"
         >
           Add New Car
@@ -130,11 +130,12 @@ export default function MyCars() {
                     >
                       <Eye className="w-3.5 h-3.5" /> View
                     </Link>
-                    <button 
+                    <Link 
+                      to={`/dashboard/edit-car/${car.id}`}
                       className="flex items-center justify-center gap-1.5 py-2 bg-[#111216] hover:bg-zinc-800 border border-zinc-800 text-zinc-300 rounded-lg text-xs font-medium transition-colors"
                     >
                       <Edit2 className="w-3.5 h-3.5" /> Edit
-                    </button>
+                    </Link>
                     <button 
                       onClick={() => handleDelete(car.id)}
                       className="flex items-center justify-center gap-1.5 py-2 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-500 rounded-lg text-xs font-medium transition-colors"
@@ -159,7 +160,7 @@ export default function MyCars() {
             Start listing your vehicles to reach thousands of potential buyers on our marketplace.
           </p>
           <Link 
-            to="/myshop/add-car"
+            to="/dashboard/add-car"
             className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-medium transition-colors"
           >
             Add Your First Car

@@ -54,7 +54,17 @@ export const registerWithFirebase = async (email, password, role, fullName) => {
     // FALLBACK FOR DEVELOPMENT
     if (error.code === 'auth/invalid-api-key' || error.code === 'auth/configuration-not-found') {
       console.warn("Using Mock Registration because Firebase is not configured properly in the console.");
-      return { requireVerification: true };
+      
+      const usersDB = JSON.parse(localStorage.getItem('mockUsersDB')) || {};
+      usersDB[email] = {
+        name: fullName,
+        role: role,
+        // Customers are auto-approved, Employers need admin approval
+        isApproved: role === 'customer'
+      };
+      localStorage.setItem('mockUsersDB', JSON.stringify(usersDB));
+
+      return { requireVerification: true, isApproved: role === 'customer' };
     }
     
     throw error;
@@ -89,14 +99,20 @@ export const loginWithFirebase = async (email, password) => {
     if (error.code === 'auth/invalid-api-key' || error.code === 'auth/configuration-not-found') {
       console.warn("Using Mock Login because Firebase is not configured properly in the console.");
       
-      // Since they can't actually verify a mock email, we'll let them log in successfully
-      // so they aren't permanently locked out of testing the app UI.
       const mockUser = { uid: 'mock-uid-123', email };
-      const mockRole = 'customer'; 
-      const mockToken = generateMockJWT(mockUser, mockRole, "Test User");
+      
+      // Get role and approval status from localStorage
+      const usersDB = JSON.parse(localStorage.getItem('mockUsersDB')) || {};
+      const userData = usersDB[email] || { role: 'customer', isApproved: true, name: 'Test User' };
+      
+      if (userData.role === 'shop_owner' && !userData.isApproved) {
+        throw new Error("Your Employer account is pending Admin approval.");
+      }
+
+      const mockToken = generateMockJWT(mockUser, userData.role, userData.name);
       storeTokens({ access: mockToken, refresh: mockToken });
       
-      return { user: mockUser, token: mockToken };
+      return { user: mockUser, token: mockToken, role: userData.role };
     }
     
     throw error;
