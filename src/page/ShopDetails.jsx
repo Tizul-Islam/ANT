@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import { Api_Base_Url } from '../config/api';
 import { QRCodeCanvas } from 'qrcode.react';
+import { ArrowLeft, MapPin, Phone, Calendar, Download, Search, Filter, AlertCircle, Loader2 } from 'lucide-react';
+import useTitle from '../utils/useTitle';
 
 export default function ShopDetails() {
   const { id } = useParams();
@@ -15,23 +16,19 @@ export default function ShopDetails() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [categories, setCategories] = useState([]);
-  // QR helpers
+  
+  useTitle(`Shop Details | ANT`);
   const qrRef = useRef(null);
-  // Build a canonical absolute URL that mobile scanners recognize as a website link
+
   const currentUrl = (() => {
     if (typeof window === 'undefined') return '';
     const origin = window.location.origin;
     const pathname = window.location.pathname;
     const search = window.location.search;
-
-    // Construct clean URL
     let finalUrl = origin + pathname + search;
-
-    // Ensure HTTPS for production domains (helps mobile recognition)
     if (!origin.includes('localhost') && !origin.includes('127.0.0.1') && !finalUrl.startsWith('https://')) {
       finalUrl = finalUrl.replace('http://', 'https://');
     }
-
     return finalUrl;
   })();
 
@@ -39,12 +36,8 @@ export default function ShopDetails() {
     try {
       const container = qrRef.current;
       if (!container) return;
-
-      // QRCodeCanvas renders as a canvas element
       const canvas = container.querySelector('canvas');
       if (!canvas) return;
-
-      // Convert canvas to PNG and download
       const pngData = canvas.toDataURL('image/png');
       const a = document.createElement('a');
       a.download = `shop-${id}-qr.png`;
@@ -58,8 +51,10 @@ export default function ShopDetails() {
   const fetchShopDetails = useCallback(async () => {
     try {
       setError('');
-      const response = await axios.get(`${Api_Base_Url}/api/shops/${id}/`);
-      setShop(response.data);
+      const response = await axios.get(`/shops`);
+      const shopData = response.data.find(s => String(s.id) === String(id));
+      if (!shopData) throw new Error("Shop not found");
+      setShop(shopData);
     } catch (error) {
       console.error('Error fetching shop details:', error);
       setError('Failed to load shop details. Please try again.');
@@ -71,41 +66,22 @@ export default function ShopDetails() {
   const fetchShopProducts = useCallback(async () => {
     try {
       setError('');
-      // Try to filter by shop ID in the API call
-      const response = await axios.get(`${Api_Base_Url}/api/shop-products/?shop=${id}`);
-      console.log('Fetched products from API:', response.data);
-
-      // Handle paginated response structure
+      const response = await axios.get(`/products`);
+      
       let shopProducts = [];
+      let allProducts = [];
+
       if (response.data && response.data.results) {
-        // Paginated response
-        shopProducts = response.data.results;
+        allProducts = response.data.results;
       } else if (Array.isArray(response.data)) {
-        // Direct array response
-        shopProducts = response.data;
-      } else {
-        shopProducts = [];
+        allProducts = response.data;
       }
 
-      // If API doesn't support shop filtering or no products found, filter client-side
-      if (!shopProducts || shopProducts.length === 0) {
-        const allProductsResponse = await axios.get(`${Api_Base_Url}/api/shop-products/`);
-        let allProducts = [];
-
-        if (allProductsResponse.data && allProductsResponse.data.results) {
-          allProducts = allProductsResponse.data.results;
-        } else if (Array.isArray(allProductsResponse.data)) {
-          allProducts = allProductsResponse.data;
-        }
-
-        shopProducts = allProducts.filter(product =>
-          product.shop_name === shop?.name || product.shop === parseInt(id)
-        );
-      }
+      shopProducts = allProducts.filter(product =>
+        product.shop_name === shop?.name || String(product.shop) === String(id)
+      );
 
       setProducts(shopProducts);
-
-      // Extract unique categories
       const uniqueCategories = [...new Set(shopProducts.map(product => product.category).filter(Boolean))];
       setCategories(uniqueCategories);
     } catch (error) {
@@ -119,18 +95,15 @@ export default function ShopDetails() {
 
   const filterProducts = useCallback(() => {
     let filtered = products;
-
     if (searchTerm) {
       filtered = filtered.filter(product =>
         product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.category?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-
     if (selectedCategory) {
       filtered = filtered.filter(product => product.category === selectedCategory);
     }
-
     setFilteredProducts(filtered);
   }, [products, searchTerm, selectedCategory]);
 
@@ -139,45 +112,40 @@ export default function ShopDetails() {
     setSelectedCategory('');
   };
 
-  // Fetch shop details
   useEffect(() => {
     if (id) {
       fetchShopDetails();
     }
   }, [id, fetchShopDetails]);
 
-  // Fetch shop products
   useEffect(() => {
     fetchShopProducts();
   }, [fetchShopProducts]);
 
-  // Filter products when search term or category changes
   useEffect(() => {
     filterProducts();
   }, [filterProducts]);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex justify-center items-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+      <div className="min-h-[calc(100vh-64px)] bg-[#09090b] flex justify-center items-center">
+        <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
       </div>
     );
   }
 
   if (error && !shop) {
     return (
-      <div className="min-h-screen bg-gray-50 flex justify-center items-center">
-        <div className="text-center">
-          <div className="text-red-600 mb-4">
-            <svg className="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+      <div className="min-h-[calc(100vh-64px)] bg-[#09090b] flex justify-center items-center">
+        <div className="text-center bg-[#0c0d10] border border-zinc-800 rounded-2xl p-8 max-w-md w-full">
+          <div className="w-16 h-16 bg-rose-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="w-8 h-8 text-rose-500" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Error Loading Shop</h3>
-          <p className="text-gray-600 mb-4">{error}</p>
+          <h3 className="text-xl font-bold text-white mb-2">Error Loading Shop</h3>
+          <p className="text-zinc-400 mb-6">{error}</p>
           <Link
             to="/shops"
-            className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+            className="inline-flex items-center justify-center w-full px-4 py-3 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors font-medium"
           >
             ← Back to Shops
           </Link>
@@ -187,294 +155,227 @@ export default function ShopDetails() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-[calc(100vh-64px)] bg-[#09090b] text-white">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        
         {/* Back Button */}
-        <div className="mb-6">
+        <div className="mb-8">
           <Link
             to="/shops"
-            className="inline-flex items-center text-green-600 hover:text-green-700 transition-colors"
+            className="inline-flex items-center text-zinc-400 hover:text-white transition-colors text-sm font-medium"
           >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-            </svg>
+            <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Shops
           </Link>
         </div>
 
         {/* Shop Details Header */}
         {shop && (
-          <div className="bg-white rounded-lg shadow-sm p-6 lg:p-8 mb-8">
-            <div className="flex flex-col lg:flex-row gap-8 items-start">
-              {/* Compact Image */}
-              <div className="flex flex-row lg:flex-row gap-8 items-start">
-
-
-                <div className="w-32 lg:w-80 justify-center items-center h-auto flex-shrink-0 relative group">
+          <div className="bg-[#0c0d10] border border-zinc-800 rounded-2xl p-6 lg:p-10 mb-12">
+            <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start justify-between">
+              
+              <div className="flex flex-col sm:flex-row gap-6 lg:gap-10">
+                {/* Shop Image / Logo */}
+                <div className="w-32 sm:w-48 h-32 sm:h-48 bg-zinc-900 rounded-2xl flex-shrink-0 relative overflow-hidden group border border-zinc-800">
                   <img
-                    src={shop.shop_image || '/api/placeholder/300/300'}
+                    src={shop.shop_image || 'https://placehold.co/300x300'}
                     alt={shop.name}
-                    className="w-auto h-auto justify-center items-center object-cover rounded-xl ring-1 ring-gray-200 shadow-sm group-hover:shadow-md transition-shadow"
-                    onError={(e) => {
-                      e.target.src = '/api/placeholder/300/300';
-                    }}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    onError={(e) => { e.target.src = 'https://placehold.co/300x300'; }}
                   />
-                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-green-600 text-white text-[10px] px-2 py-0.5 rounded-full shadow hidden group-hover:block">Logo</div>
-                </div>
-                <div className="space-y-4 lg:space-y-6 lg:pr-4">
-                  <div>
-                    <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-1 tracking-tight">{shop.name}</h1>
-                    <p className="text-sm uppercase tracking-wide text-green-600 font-medium">Registered Shop</p>
-                    <p className="mt-3 text-gray-600">Owner: <span className="font-semibold text-gray-900">{shop.owner_name}</span></p>
+                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors"></div>
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-indigo-500 text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all">
+                    Verified
                   </div>
-                  {/* Contact Information */}
-                  <div className="space-y-3 lg:space-y-4">
-                    <div className="flex items-start">
-                      <svg className="w-4 h-4 lg:w-5 lg:h-5 text-gray-400 mr-2 lg:mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
+                </div>
+                
+                {/* Shop Info */}
+                <div className="space-y-6">
+                  <div>
+                    <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2 tracking-tight">{shop.name}</h1>
+                    <div className="flex items-center gap-2">
+                      <span className="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-xs px-2.5 py-1 rounded-full uppercase tracking-wider font-semibold">
+                        Registered Shop
+                      </span>
+                      <span className="text-zinc-500 text-sm">Owner: <span className="text-white">{shop.owner_name}</span></span>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <MapPin className="w-5 h-5 text-zinc-500 shrink-0 mt-0.5" />
                       <div>
-                        <p className="font-medium text-gray-900 text-sm lg:text-base">Address</p>
-                        <p className="text-gray-600 text-sm lg:text-base">{shop.address}</p>
+                        <p className="text-sm font-medium text-zinc-300">Address</p>
+                        <p className="text-sm text-zinc-500 mt-0.5">{shop.address}</p>
                       </div>
                     </div>
                     {shop.owner_phone && (
-                      <div className="flex items-center">
-                        <svg className="w-4 h-4 lg:w-5 lg:h-5 text-gray-400 mr-2 lg:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                        </svg>
+                      <div className="flex items-center gap-3">
+                        <Phone className="w-5 h-5 text-zinc-500 shrink-0" />
                         <div>
-                          <p className="font-medium text-gray-900 text-sm lg:text-base">Phone</p>
-                          <a href={`tel:${shop.owner_phone}`} className="text-green-600 hover:text-green-700 text-sm lg:text-base">{shop.owner_phone}</a>
+                          <p className="text-sm font-medium text-zinc-300">Phone</p>
+                          <a href={`tel:${shop.owner_phone}`} className="text-sm text-indigo-400 hover:text-indigo-300 mt-0.5 inline-block">{shop.owner_phone}</a>
                         </div>
                       </div>
                     )}
-                    <div className="flex items-center">
-                      <svg className="w-4 h-4 lg:w-5 lg:h-5 text-gray-400 mr-2 lg:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3a4 4 0 118 0v4m-4 6v4m-6 0h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
-                      </svg>
+                    <div className="flex items-center gap-3">
+                      <Calendar className="w-5 h-5 text-zinc-500 shrink-0" />
                       <div>
-                        <p className="font-medium text-gray-900 text-sm lg:text-base">Established</p>
-                        <p className="text-gray-600 text-sm lg:text-base">{shop.created_at ? new Date(shop.created_at).toLocaleDateString() : 'Not specified'}</p>
+                        <p className="text-sm font-medium text-zinc-300">Established</p>
+                        <p className="text-sm text-zinc-500 mt-0.5">{shop.created_at ? new Date(shop.created_at).toLocaleDateString() : 'Not specified'}</p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Shop Information & QR Grid */}
-              <div className="flex-1 grid grid-cols-1 lg:grid-cols-1 gap-6 lg:gap-10">
-                {/* Info Column */}
-
-                {/* QR Column */}
-                <div className="flex flex-col items-center justify-start gap-4 lg:gap-5 lg:border-l lg:pl-8 border-gray-100">
-                  <div ref={qrRef} className="p-3 lg:p-5 bg-gradient-to-br from-white to-green-50 rounded-2xl border border-green-100 shadow-sm hover:shadow-md transition-shadow">
-                    <a
-                      href={currentUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Open this shop page in a new tab"
-                      title="Open shop page"
-                      className="block focus:outline-none focus:ring-2 focus:ring-green-500 rounded"
-                    >
-                      <QRCodeCanvas
-                        value={currentUrl || 'https://example.com'}
-                        size={150}
-                        bgColor="#ffffff"
-                        fgColor="#065f46"
-                        level="M"
-                        includeMargin={true}
-                      />
-                    </a>
-                  </div>
+              {/* QR Code Section */}
+              <div className="flex flex-col items-center justify-center gap-4 bg-[#09090b] border border-zinc-800 rounded-xl p-6 w-full lg:w-auto">
+                <div ref={qrRef} className="p-3 bg-white rounded-xl">
+                  <a href={currentUrl} target="_blank" rel="noopener noreferrer" className="block outline-none">
+                    <QRCodeCanvas
+                      value={currentUrl || 'https://example.com'}
+                      size={140}
+                      bgColor="#ffffff"
+                      fgColor="#000000"
+                      level="M"
+                      includeMargin={false}
+                    />
+                  </a>
+                </div>
+                <div className="text-center space-y-3">
+                  <p className="text-[11px] text-zinc-500 tracking-wider uppercase font-medium">Scan to open shop</p>
                   <button
                     onClick={handleDownloadQR}
-                    type="button"
-                    className="inline-flex items-center gap-2 px-4 py-2 lg:px-5 lg:py-2.5 rounded-md bg-green-600 text-white text-sm font-medium shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
+                    className="inline-flex items-center justify-center gap-2 w-full px-4 py-2 bg-[#111216] hover:bg-[#1a1b20] border border-zinc-800 text-white rounded-lg text-sm font-medium transition-colors"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" /></svg>
-                    Download QR
+                    <Download className="w-4 h-4" />
+                    Save QR
                   </button>
-                  <p className="text-[11px] text-gray-500 tracking-wide">Scan to open this shop</p>
-                  {/* Mobile friendly URL field */}
-                  {/* <div className="w-full max-w-xs space-y-1">
-                    <label className="text-xs font-medium text-gray-600">Direct Link</label>
-                    <div className="flex items-stretch rounded-md overflow-hidden border border-gray-200 bg-white focus-within:ring-2 focus-within:ring-green-500">
-                      <input
-                        type="url"
-                        readOnly
-                        value={currentUrl}
-                        onFocus={(e)=>e.target.select()}
-                        className="flex-1 px-3 py-2 text-sm bg-white outline-none"
-                      />
-                      <button
-                        type="button"
-                        onClick={handleCopyLink}
-                        className="px-3 text-sm bg-green-600 text-white hover:bg-green-700 transition-colors flex items-center gap-1"
-                      >
-                        {copiedLink ? (
-                          <>
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
-                            Copied
-                          </>
-                        ) : (
-                          <>
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 17l4 4 4-4m-4-5v9M3 12a9 9 0 1118 0 9 9 0 01-18 0z" /></svg>
-                            Copy
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  </div> */}
                 </div>
               </div>
+
             </div>
           </div>
         )}
 
         {/* Products Section */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Available Products</h2>
-
-          {/* Error Message for Products */}
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-              <div className="flex">
-                <svg className="w-5 h-5 text-red-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <p className="text-red-700">{error}</p>
-              </div>
+        <div className="mb-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+            <div>
+              <h2 className="text-2xl font-bold text-white mb-2">Available Products</h2>
+              <p className="text-sm text-zinc-400">
+                Found {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} in this shop
+              </p>
             </div>
-          )}
-
-          {/* Search and Filter */}
-          <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-            <div className="flex flex-col md:flex-row gap-4">
-              {/* Search Bar */}
-              <div className="flex-1">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Search products..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full px-4 py-3 border border-green-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  />
-                  <button className="absolute right-0 top-0 h-full px-6 bg-green-600 text-white rounded-r-md hover:bg-green-700 transition-colors">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  </button>
-                </div>
+            
+            <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full sm:w-64 bg-[#0c0d10] border border-zinc-800 rounded-lg pl-9 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors"
+                />
               </div>
-
-              {/* Category Filter */}
-              <div className="md:w-64">
+              <div className="relative">
+                <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white"
+                  className="w-full sm:w-48 bg-[#0c0d10] border border-zinc-800 rounded-lg pl-9 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 appearance-none transition-colors"
                 >
                   <option value="">All Categories</option>
                   {categories.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
+                    <option key={category} value={category}>{category}</option>
                   ))}
                 </select>
               </div>
-
-              {/* Clear Filters */}
-              {(searchTerm || selectedCategory) && (
-                <button
-                  onClick={clearFilters}
-                  className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
-                >
-                  Clear Filters
-                </button>
-              )}
             </div>
           </div>
 
-          {/* Products Loading */}
+          {error && (
+            <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl p-4 mb-8 flex items-center gap-3">
+              <AlertCircle className="w-5 h-5 text-rose-500 shrink-0" />
+              <p className="text-rose-400 text-sm">{error}</p>
+            </div>
+          )}
+
           {productsLoading ? (
             <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+              <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
             </div>
           ) : (
             <>
-              {/* Results Count */}
-              <div className="mb-6">
-                <p className="text-gray-600">
-                  Found {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''}
-                  {searchTerm && ` for "${searchTerm}"`}
-                  {selectedCategory && ` in "${selectedCategory}"`}
-                </p>
-              </div>
-
-              {/* Products Grid */}
               {filteredProducts.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg:gap-6">
                   {filteredProducts.map((product) => (
-                    <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                      <div className="aspect-square">
+                    <div key={product.id} className="bg-[#0c0d10] border border-zinc-800 rounded-2xl overflow-hidden group hover:border-zinc-700 transition-colors flex flex-col">
+                      <div className="aspect-[4/3] bg-zinc-900 relative overflow-hidden">
                         <img
-                          src={product.image || '/api/placeholder/300/300'}
+                          src={product.image || 'https://placehold.co/300x300'}
                           alt={product.name}
-                          className="w-full h-full object-contain"
-                          onError={(e) => {
-                            e.target.src = '/api/placeholder/300/300';
-                          }}
+                          className="w-full h-full object-cover mix-blend-overlay opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+                          onError={(e) => { e.target.src = 'https://placehold.co/300x300'; }}
                         />
-                      </div>
-                      <div className="p-4">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-                          {product.name}
-                        </h3>
-
                         {product.category && (
-                          <div className="mb-2">
-                            <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                          <div className="absolute top-2 left-2">
+                            <span className="bg-black/60 backdrop-blur-md text-white border border-white/10 text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded">
                               {product.category}
                             </span>
                           </div>
                         )}
-
-                        <div className="flex justify-between items-center mb-3">
-                          <span className="text-2xl font-bold text-green-600">
-                            ৳{product.price}
-                          </span>
-                          <span className={`text-sm px-2 py-1 rounded-full ${product.stock && product.stock !== '0'
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-red-100 text-red-800'
+                      </div>
+                      <div className="p-4 flex flex-col flex-1">
+                        <h3 className="text-sm font-semibold text-white mb-2 line-clamp-2 leading-snug">
+                          {product.name}
+                        </h3>
+                        
+                        <div className="mt-auto pt-4">
+                          <div className="flex items-center justify-between mb-4">
+                            <span className="text-lg font-bold text-white">
+                              ৳{product.price}
+                            </span>
+                            <span className={`text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded-sm ${
+                              product.stock && product.stock !== '0'
+                                ? 'bg-emerald-500/10 text-emerald-400'
+                                : 'bg-rose-500/10 text-rose-400'
                             }`}>
-                            {product.stock && product.stock !== '0' ? `Stock: ${product.stock}` : 'Out of Stock'}
-                          </span>
+                              {product.stock && product.stock !== '0' ? `Stock: ${product.stock}` : 'Out'}
+                            </span>
+                          </div>
+                          <Link
+                            to={`/product/${product.id}`}
+                            className="block w-full bg-[#111216] hover:bg-indigo-500 text-zinc-300 hover:text-white border border-zinc-800 hover:border-indigo-500 text-center py-2.5 rounded-lg text-sm font-medium transition-all"
+                          >
+                            View Details
+                          </Link>
                         </div>
-
-                        <Link
-                          to={`/shop-products/${product.id}`}
-                          className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors inline-block text-center"
-                        >
-                          View Details
-                        </Link>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-12">
-                  <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                  </svg>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
-                  <p className="text-gray-600">
+                <div className="bg-[#0c0d10] border border-dashed border-zinc-800 rounded-2xl py-24 text-center px-4">
+                  <div className="w-16 h-16 bg-zinc-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Search className="w-8 h-8 text-zinc-600" />
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2">No products found</h3>
+                  <p className="text-sm text-zinc-500 max-w-sm mx-auto mb-6">
                     {searchTerm || selectedCategory
-                      ? 'Try adjusting your search criteria.'
+                      ? 'Try adjusting your search criteria or clearing filters.'
                       : 'This shop hasn\'t added any products yet.'}
                   </p>
+                  {(searchTerm || selectedCategory) && (
+                    <button
+                      onClick={clearFilters}
+                      className="bg-[#111216] border border-zinc-800 hover:border-zinc-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors"
+                    >
+                      Clear Filters
+                    </button>
+                  )}
                 </div>
               )}
             </>

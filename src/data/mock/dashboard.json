@@ -1,0 +1,78 @@
+{
+  "shop_dashboard": {
+    "overview": {
+      "totalRevenue": 125000,
+      "totalOrders": 142,
+      "activeCustomers": 89,
+      "lowStockItems": 12
+    },
+    "recentOrders": [
+      {
+        "id": "ORD-2023-001",
+        "customer": "Rahim Uddin",
+        "date": "2023-10-25",
+        "amount": 4500,
+        "status": "Delivered"
+      },
+      {
+        "id": "ORD-2023-002",
+        "customer": "Kamal Hossain",
+        "date": "2023-10-26",
+        "amount": 12000,
+        "status": "Processing"
+      },
+      {
+        "id": "ORD-2023-003",
+        "customer": "Sajedul Islam",
+        "date": "2023-10-26",
+        "amount": 2300,
+        "status": "Pending"
+      },
+      {
+        "id": "ORD-2023-004",
+        "customer": "Abdur Rahman",
+        "date": "2023-10-27",
+        "amount": 8500,
+        "status": "Shipped"
+      }
+    ],
+    "topProducts": [
+      {
+        "id": 1,
+        "name": "Toyota Axio Brake Pad Set",
+        "sales": 45,
+        "revenue": 67500
+      },
+      {
+        "id": 2,
+        "name": "NGK Iridium Spark Plug",
+        "sales": 32,
+        "revenue": 38400
+      }
+    ]
+  },
+  "customer_dashboard": {
+    "overview": {
+      "totalOrders": 12,
+      "walletBalance": 1500,
+      "rewardPoints": 450,
+      "savedVehicles": 2
+    },
+    "recentOrders": [
+      {
+        "id": "ORD-2023-045",
+        "shop": "Auto Masters BD",
+        "date": "2023-10-20",
+        "amount": 3500,
+        "status": "Delivered"
+      },
+      {
+        "id": "ORD-2023-089",
+        "shop": "Dhaka Motors",
+        "date": "2023-10-28",
+        "amount": 1250,
+        "status": "Processing"
+      }
+    ]
+  }
+}

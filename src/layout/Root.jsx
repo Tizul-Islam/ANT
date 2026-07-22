@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Footer from "../components/sharedComponents/Footer";
 import Navbar from "../components/sharedComponents/Navbar";
 import CartDrawer from "../components/CartDrawer";
+import RoleSwitcher from "../components/common/RoleSwitcher";
 import ScrollToTop from "react-scroll-to-top";
 
 const Root = () => {
@@ -28,6 +29,7 @@ const Root = () => {
     <>
     <Navbar />
     <CartDrawer />
+    <RoleSwitcher />
     <Outlet />
     <Footer />
     <ScrollToTop 

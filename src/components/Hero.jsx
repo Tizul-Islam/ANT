@@ -1,247 +1,117 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import ProductCard from './productCard.jsx';
-import { Api_Base_Url } from '../config/api.js';
+import { motion } from 'framer-motion';
+import { Search, ArrowRight, ShieldCheck, Zap, Wrench } from 'lucide-react';
+import { Button } from './ui/Button';
 
 export default function Hero() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  
-  // Fallback slides if API has no banners
-  const fallbackSlides = useMemo(
-    () => [
-      '/p1.png',
-      '/p2.png',
-      '/p3.png',
-    ],
-    []
-  );
-
-  const [bannerImages, setBannerImages] = useState([]); // array of strings (image URLs)
-  const slides = bannerImages.length ? bannerImages : fallbackSlides;
-  const [idx, setIdx] = useState(0);
-  const viewportRef = useRef(null);
-  const [vw, setVw] = useState(0);
-
-  useEffect(() => {
-    if (!slides.length) return; // defensive
-    const id = setInterval(() => setIdx((i) => (i + 1) % slides.length), 4000);
-    return () => clearInterval(id);
-  }, [slides.length]);
-
-  // Measure viewport width so each slide matches it precisely
-  useEffect(() => {
-    const el = viewportRef.current;
-    if (!el) return;
-
-    const setWidth = () => setVw(el.clientWidth || 0);
-    setWidth();
-
-    let ro;
-    if (typeof ResizeObserver !== 'undefined') {
-      ro = new ResizeObserver(setWidth);
-      ro.observe(el);
-    } else {
-      window.addEventListener('resize', setWidth);
-    }
-
-    return () => {
-      if (ro) ro.disconnect();
-      else window.removeEventListener('resize', setWidth);
-    };
-  }, []);
-
-  const go = (dir) => {
-    if (!slides.length) return;
-    setIdx((i) => (dir === 'next' ? (i + 1) % slides.length : (i - 1 + slides.length) % slides.length));
-  };
-
-  // Fetch banners (only active). Falls back to full list then filters.
-  useEffect(() => {
-    let cancelled = false;
-
-    const normalizeUrl = (u) => {
-      if (!u) return null;
-      if (/^https?:/i.test(u)) return u;
-      // ensure single slash join
-      return `${Api_Base_Url}${u.startsWith('/') ? u : `/${u}`}`;
-    };
-
-    const load = async () => {
-      try {
-        // Try active endpoint first
-        const activeRes = await axios.get(`${Api_Base_Url}/api/banners/active/`);
-        let list = Array.isArray(activeRes.data) ? activeRes.data : [];
-        if ((!list || list.length === 0)) {
-          // fallback: fetch all then filter by is_active
-            try {
-              const allRes = await axios.get(`${Api_Base_Url}/api/banners/`);
-              const allList = Array.isArray(allRes.data) ? allRes.data : [];
-              list = allList.filter(b => b && (b.is_active === true || b.is_active === 'true'));
-            } catch (innerErr) {
-              console.warn('Fallback banners fetch failed:', innerErr);
-            }
-        }
-        if (cancelled) return;
-        const imgs = list
-          .map(b => normalizeUrl(b.image))
-          .filter(Boolean);
-        if (imgs.length) {
-          setBannerImages(imgs);
-          setIdx(0); // reset index after load
-        }
-      } catch (err) {
-        console.warn('Active banners fetch failed, using fallback slides.', err);
-      }
-    };
-    load();
-    return () => { cancelled = true; };
-  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // Navigate to Product page and pass search via state
       navigate('/product', { state: { searchQuery: searchQuery.trim() } });
-    } else {
-      // Navigate to Product page without search
-      navigate('/product');
     }
   };
 
-  const [products, setProducts] = useState([]);
-  useEffect(() => {
-    let mounted = true;
-    axios
-      .get(`${Api_Base_Url}/api/products/`)
-      .then((res) => {
-        console.log('API Response:', res.data);
-        
-        if (!mounted) return;
-        // Handle direct array response or nested response
-        const list = Array.isArray(res.data) 
-          ? res.data.slice(0, 5) 
-          : Array.isArray(res.data?.results) 
-            ? res.data.results.slice(0, 5) 
-            : [];
-        setProducts(list);
-      })
-      .catch((error) => {
-        console.error('Error fetching products:', error);
-        setProducts([]);
-      });
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  const FADE_UP_ANIMATION_VARIANTS = {
+    hidden: { opacity: 0, y: 30 },
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } },
+  };
 
   return (
-    <section className="bg-stone-100">
-      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-10">
-        {/* search */}
-        <div className="mx-auto max-w-3xl">
-          <form onSubmit={handleSearch} className="flex overflow-hidden rounded-md border border-green-600">
-            <input
-              type="text"
-              placeholder="Search anything"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-3 outline-none"
-            />
-            <button type="submit" className="bg-green-600 px-4 text-white">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5">
-                <circle cx="11" cy="11" r="7" />
-                <path d="M20 20l-3-3" />
-              </svg>
-              <span className="sr-only">Search</span>
-            </button>
-          </form>
-        </div>
-
-        {/* heading */}
-        <div className="mt-8 text-center">
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-zinc-900 leading-tight">
-            Our product
-            <br />
-            that
-            <span className="relative inline-block align-middle ml-1">
-              <img 
-                src="/Vector.png" 
-                alt="Background decoration" 
-                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[300px] h-auto z-0"
-              />
-              <span className="relative px-8 py-4 z-10">Best</span>
-            </span>
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-zinc-700">
-            Finely processed product produce, safe guaranteed and secured investment platform.
-          </p>
-        </div>
-
-        {/* slider */}
-        <div className="mt-10 relative">
-          <div ref={viewportRef} className="h-[340px] sm:h-[400px] md:h-[480px] lg:h-[520px] w-full overflow-hidden rounded-2xl bg-gradient-to-b from-lime-500 to-lime-200">
-            <div
-              className="flex h-full transition-transform duration-500"
-              style={{ transform: `translateX(-${idx * vw}px)` }}
-            >
-              {slides.map((src, i) => (
-                <div key={i} className="h-full flex-shrink-0" style={{ width: vw }}>
-                  <img src={src} alt={`Slide ${i + 1}`} className="h-full w-full object-cover object-center" loading="lazy" />
-                </div>
-              ))}
-            </div>
-          </div>
-          {/* arrows */}
-          <button
-            type="button"
-            onClick={() => go('prev')}
-            className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-2 shadow hover:bg-white"
-            aria-label="Previous slide"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5">
-              <path d="M15 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-          <button
-            type="button"
-            onClick={() => go('next')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-2 shadow hover:bg-white"
-            aria-label="Next slide"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5">
-              <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-        </div>
-
-        {/* 5 product cards (no scroll) */}
-        <div className="mt-20">
-          <div className="mb-6 flex items-center justify-between">
-            <h3 className="text-lg font-bold uppercase tracking-wide">Featured Products</h3>
-            <button
-              onClick={() => navigate('/product')}
-              className="rounded-full border border-gray-200 px-4 py-1.5 text-xs font-medium text-gray-800 hover:bg-gray-50"
-            >
-              View all
-            </button>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-            {products.map((p) => (
-              <ProductCard 
-                key={p.id} 
-                imageSrc={p.image || '/api/placeholder/300/300'}
-                name={p.name}
-                price={parseFloat(p.price) || 0}
-                to={`/product/${p.id}`}
-                compact
-              />
-            ))}
-          </div>
-        </div>
+    <section className="relative overflow-hidden bg-black text-white min-h-[90vh] flex flex-col justify-center">
+      {/* Abstract Background Elements */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-1/4 left-1/4 w-[40vw] h-[40vw] bg-[var(--color-primary)]/20 rounded-full blur-[120px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-[30vw] h-[30vw] bg-blue-600/20 rounded-full blur-[100px]" />
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
+        <div className="absolute inset-0 bg-black/50"></div>
       </div>
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 py-20">
+        <motion.div 
+          className="text-center max-w-4xl mx-auto"
+          initial="hidden"
+          animate="show"
+          viewport={{ once: true }}
+          variants={{
+            hidden: {},
+            show: {
+              transition: {
+                staggerChildren: 0.15,
+              },
+            },
+          }}
+        >
+          <motion.div variants={FADE_UP_ANIMATION_VARIANTS} className="flex justify-center mb-6">
+            <div className="inline-flex items-center rounded-full border border-zinc-800 bg-zinc-900/50 px-3 py-1 text-sm text-zinc-300 backdrop-blur-sm">
+              <Zap className="w-4 h-4 text-[var(--color-primary)] mr-2" />
+              <span>The Next Generation Automotive Marketplace</span>
+            </div>
+          </motion.div>
+
+          <motion.h1 
+            variants={FADE_UP_ANIMATION_VARIANTS}
+            className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight mb-8"
+          >
+            Find exactly what your <br className="hidden sm:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-200 to-zinc-500">
+              vehicle needs.
+            </span>
+          </motion.h1>
+
+          <motion.p 
+            variants={FADE_UP_ANIMATION_VARIANTS}
+            className="text-lg sm:text-xl text-zinc-400 mb-10 max-w-2xl mx-auto"
+          >
+            Access millions of verified OEM and aftermarket parts, connect with top-rated mechanics, and manage your garage in one unified ecosystem.
+          </motion.p>
+
+          <motion.div variants={FADE_UP_ANIMATION_VARIANTS} className="max-w-2xl mx-auto mb-16">
+            <form onSubmit={handleSearch} className="relative flex items-center group">
+              <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-primary)] to-blue-600 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-500"></div>
+              <div className="relative flex w-full bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden backdrop-blur-md">
+                <div className="pl-6 flex items-center justify-center">
+                  <Search className="w-6 h-6 text-zinc-500" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search by part name, VIN, or OEM number..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-transparent px-4 py-5 text-zinc-100 outline-none placeholder:text-zinc-500 text-lg"
+                />
+                <div className="pr-2 flex items-center">
+                  <Button type="submit" size="lg" className="rounded-xl px-8 bg-[var(--color-primary)] hover:bg-opacity-90 text-white font-semibold flex items-center gap-2">
+                    Search <ArrowRight className="w-5 h-5" />
+                  </Button>
+                </div>
+              </div>
+            </form>
+          </motion.div>
+
+          <motion.div variants={FADE_UP_ANIMATION_VARIANTS} className="flex flex-wrap justify-center gap-8 text-zinc-500 text-sm font-medium">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-green-500" />
+              Verified Vendors Only
+            </div>
+            <div className="flex items-center gap-2">
+              <Wrench className="w-5 h-5 text-blue-500" />
+              Expert Mechanics
+            </div>
+            <div className="flex items-center gap-2">
+              <Zap className="w-5 h-5 text-yellow-500" />
+              Fast Delivery
+            </div>
+          </motion.div>
+
+        </motion.div>
+      </div>
+
+      {/* Fade into next section */}
+      <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-[var(--color-background)] to-transparent z-10 pointer-events-none"></div>
     </section>
   );
 }

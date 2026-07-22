@@ -1,0 +1,62 @@
+[
+  {
+    "id": "1",
+    "name": "Dhaka Auto Hub",
+    "location": "Dhaka, Bangladesh",
+    "rating": 5.0,
+    "reviews": 1284,
+    "products_count": 432,
+    "image": "https://images.unsplash.com/photo-1542362567-b07e54358753?w=800&h=400&fit=crop",
+    "verified": true
+  },
+  {
+    "id": "2",
+    "name": "CTG Motor Works",
+    "location": "Chattogram, Bangladesh",
+    "rating": 4.9,
+    "reviews": 892,
+    "products_count": 318,
+    "image": "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&h=400&fit=crop",
+    "verified": true
+  },
+  {
+    "id": "3",
+    "name": "Speedline Parts",
+    "location": "Sylhet, Bangladesh",
+    "rating": 4.8,
+    "reviews": 654,
+    "products_count": 221,
+    "image": "https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?w=800&h=400&fit=crop",
+    "verified": true
+  },
+  {
+    "id": "4",
+    "name": "Rajshahi OEM Store",
+    "location": "Rajshahi, Bangladesh",
+    "rating": 4.9,
+    "reviews": 412,
+    "products_count": 178,
+    "image": "https://images.unsplash.com/photo-1603386329225-868f9b1ee6c9?w=800&h=400&fit=crop",
+    "verified": true
+  },
+  {
+    "id": "5",
+    "name": "Khulna Tire Center",
+    "location": "Khulna, Bangladesh",
+    "rating": 4.7,
+    "reviews": 723,
+    "products_count": 89,
+    "image": "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&h=400&fit=crop",
+    "verified": true
+  },
+  {
+    "id": "6",
+    "name": "Pro Mechanic Supply",
+    "location": "Dhaka, Bangladesh",
+    "rating": 4.8,
+    "reviews": 543,
+    "products_count": 267,
+    "image": "https://images.unsplash.com/photo-1632823462995-ee91535eb093?w=800&h=400&fit=crop",
+    "verified": true
+  }
+]
