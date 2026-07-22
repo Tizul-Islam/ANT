@@ -39,6 +39,7 @@ export default function DashboardLayout() {
   const customerLinks = [
     { name: 'Dashboard', to: '/profile', icon: LayoutDashboard },
     { name: 'My Orders', to: '/profile/orders', icon: ShoppingCart },
+    { name: 'Wishlist', to: '/profile/wishlist', icon: Heart },
     { name: 'Wallet', to: '/profile/wallet', icon: Wallet },
     { name: 'My Garage', to: '/profile/vehicles', icon: Car },
     { name: 'Training', to: '/profile/training', icon: GraduationCap },
