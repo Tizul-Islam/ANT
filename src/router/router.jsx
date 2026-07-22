@@ -14,8 +14,8 @@ import Profile from "../page/Profile";
 import ProductDetails from "../page/ProductDetails";
 import Myshop from "../page/Myshop";
 
-import ViewInShop from "../page/ViewInShop";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
+import DashboardRedirect from "../components/DashboardRedirect";
 import TermsCon from "../page/TermsCon";
 import ProvacyPolicy from "../page/ProvacyPolicy";
 import NotFound from "../page/NotFound";
@@ -70,7 +70,7 @@ export const router = createBrowserRouter([
       { 
         path: "/shops", 
         element: (
-          <ProtectedRoute restrictedRoles={['shop_owner']} fallbackRedirect="/myshop">
+          <ProtectedRoute restrictedRoles={['shop_owner']} fallbackRedirect="/dashboard">
             <Shops />
           </ProtectedRoute>
         )
@@ -78,7 +78,7 @@ export const router = createBrowserRouter([
       { 
         path: "/shops/:id", 
         element: (
-          <ProtectedRoute restrictedRoles={['shop_owner']} fallbackRedirect="/myshop">
+          <ProtectedRoute restrictedRoles={['shop_owner']} fallbackRedirect="/dashboard">
             <ShopDetails />
           </ProtectedRoute>
         )
@@ -101,30 +101,34 @@ export const router = createBrowserRouter([
     element: <DashboardLayout />,
     errorElement: <ErrorPage />,
     children: [
-      { path: "/myshop", element: <Myshop /> },
-      { path: "/myshop/add-car", element: <AddCar /> },
-      { path: "/myshop/my-cars", element: <MyCars /> },
-      { path: "/myshop/all-cars", element: <AllCars /> },
-      { path: "/myshop/profile", element: <Settings /> },
-      { path: "/profile", element: <Profile /> },
-      { path: "/profile/orders", element: <Orders /> },
-      { path: "/profile/orders/:id", element: <OrderDetails /> },
-      { path: "/profile/wallet", element: <Wallet /> },
-      { path: "/profile/wishlist", element: <Wishlist /> },
-      { path: "/profile/vehicles", element: <MyGarage /> },
-      { path: "/profile/training", element: <ProfileTraining /> },
-      { path: "/profile/settings", element: <Settings /> },
+      // Fallback/General
+      { path: "/dashboard", element: <DashboardRedirect /> }, 
+
+      
+      // Employer Routes
+      { path: "/dashboard/add-car", element: <ProtectedRoute allowedRoles={['shop_owner', 'admin']}><AddCar /></ProtectedRoute> },
+      { path: "/dashboard/my-cars", element: <ProtectedRoute allowedRoles={['shop_owner']}><MyCars /></ProtectedRoute> },
+      { path: "/dashboard/all-cars", element: <ProtectedRoute allowedRoles={['shop_owner']}><AllCars /></ProtectedRoute> },
+      { path: "/dashboard/profile", element: <ProtectedRoute allowedRoles={['shop_owner']}><Settings /></ProtectedRoute> },
+      
+      // Customer Routes
+      { path: "/dashboard/orders", element: <ProtectedRoute allowedRoles={['customer']}><Orders /></ProtectedRoute> },
+      { path: "/dashboard/orders/:id", element: <ProtectedRoute allowedRoles={['customer']}><OrderDetails /></ProtectedRoute> },
+      { path: "/dashboard/wallet", element: <ProtectedRoute allowedRoles={['customer']}><Wallet /></ProtectedRoute> },
+      { path: "/dashboard/wishlist", element: <ProtectedRoute allowedRoles={['customer']}><Wishlist /></ProtectedRoute> },
+      { path: "/dashboard/vehicles", element: <ProtectedRoute allowedRoles={['customer']}><MyGarage /></ProtectedRoute> },
+      { path: "/dashboard/training", element: <ProtectedRoute allowedRoles={['customer']}><ProfileTraining /></ProtectedRoute> },
+      { path: "/dashboard/settings", element: <ProtectedRoute><Settings /></ProtectedRoute> },
       
       // Admin Routes
-      { path: "/admin", element: <ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute> },
-      { path: "/admin/users", element: <ProtectedRoute allowedRoles={['admin']}><AdminUsers filterRole="all" /></ProtectedRoute> },
-      { path: "/admin/employers", element: <ProtectedRoute allowedRoles={['admin']}><AdminUsers filterRole="shop_owner" /></ProtectedRoute> },
-      { path: "/admin/customers", element: <ProtectedRoute allowedRoles={['admin']}><AdminUsers filterRole="customer" /></ProtectedRoute> },
-      { path: "/admin/cars", element: <ProtectedRoute allowedRoles={['admin']}><AdminCars /></ProtectedRoute> },
-      { path: "/admin/approvals", element: <ProtectedRoute allowedRoles={['admin']}><AdminApprovals /></ProtectedRoute> },
-      { path: "/admin/reviews", element: <ProtectedRoute allowedRoles={['admin']}><div className="p-8 text-white text-xl">Reviews Module (Coming Soon)</div></ProtectedRoute> },
-      { path: "/admin/reports", element: <ProtectedRoute allowedRoles={['admin']}><div className="p-8 text-white text-xl">Reports Module (Coming Soon)</div></ProtectedRoute> },
-      { path: "/admin/settings", element: <ProtectedRoute allowedRoles={['admin']}><Settings /></ProtectedRoute> },
+      { path: "/dashboard/manage-users", element: <ProtectedRoute allowedRoles={['admin']}><AdminUsers filterRole="all" /></ProtectedRoute> },
+      { path: "/dashboard/employers", element: <ProtectedRoute allowedRoles={['admin']}><AdminUsers filterRole="shop_owner" /></ProtectedRoute> },
+      { path: "/dashboard/customers", element: <ProtectedRoute allowedRoles={['admin']}><AdminUsers filterRole="customer" /></ProtectedRoute> },
+      { path: "/dashboard/manage-cars", element: <ProtectedRoute allowedRoles={['admin']}><AdminCars /></ProtectedRoute> },
+      { path: "/dashboard/approvals", element: <ProtectedRoute allowedRoles={['admin']}><AdminApprovals /></ProtectedRoute> },
+      { path: "/dashboard/reviews", element: <ProtectedRoute allowedRoles={['admin']}><div className="p-8 text-white text-xl">Reviews Module (Coming Soon)</div></ProtectedRoute> },
+      { path: "/dashboard/reports", element: <ProtectedRoute allowedRoles={['admin']}><div className="p-8 text-white text-xl">Reports Module (Coming Soon)</div></ProtectedRoute> },
+      { path: "/dashboard/analytics", element: <ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute> },
     ]
   }
 ]);

@@ -63,7 +63,7 @@ export default function Auth() {
         
         toast.success("Welcome, Super Admin!");
         window.dispatchEvent(new Event('userStatusChanged'));
-        navigate('/admin');
+        navigate('/dashboard');
         setIsLoading(false);
         return;
       }
@@ -77,7 +77,7 @@ export default function Auth() {
         window.dispatchEvent(new Event('userStatusChanged'));
 
         // Redirect logic
-        const origin = location.state?.from?.pathname || '/';
+        const origin = location.state?.from?.pathname || '/dashboard';
         navigate(origin);
 
       } else {

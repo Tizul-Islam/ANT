@@ -61,7 +61,7 @@ export default function AddCar() {
       
       setIsSubmitting(false);
       toast.success("Car added successfully! It is now Pending approval.");
-      navigate('/myshop/my-cars');
+      navigate('/dashboard/my-cars');
     }, 1500);
   };
 

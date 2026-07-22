@@ -32,36 +32,36 @@ export default function DashboardLayout() {
     navigate('/auth');
   };
 
-  // Define navigation based on role (Shop Owner = Employer)
+  // Define navigation based on role
   const shopLinks = [
-    { name: 'Dashboard', to: '/myshop', icon: LayoutDashboard },
-    { name: 'Add Car', to: '/myshop/add-car', icon: PlusCircle },
-    { name: 'My Cars', to: '/myshop/my-cars', icon: Car },
-    { name: 'All Cars', to: '/myshop/all-cars', icon: List },
-    { name: 'Profile', to: '/myshop/profile', icon: User },
+    { name: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
+    { name: 'Add Car', to: '/dashboard/add-car', icon: PlusCircle },
+    { name: 'My Cars', to: '/dashboard/my-cars', icon: Car },
+    { name: 'All Cars', to: '/dashboard/all-cars', icon: List },
+    { name: 'Profile', to: '/dashboard/profile', icon: User },
   ];
 
   const customerLinks = [
-    { name: 'Dashboard', to: '/profile', icon: LayoutDashboard },
-    { name: 'My Orders', to: '/profile/orders', icon: ShoppingCart },
-    { name: 'Wishlist', to: '/profile/wishlist', icon: Heart },
-    { name: 'Wallet', to: '/profile/wallet', icon: Wallet },
-    { name: 'My Garage', to: '/profile/vehicles', icon: Car },
-    { name: 'Training', to: '/profile/training', icon: GraduationCap },
-    { name: 'Settings', to: '/profile/settings', icon: Settings },
+    { name: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
+    { name: 'My Orders', to: '/dashboard/orders', icon: ShoppingCart },
+    { name: 'Wishlist', to: '/dashboard/wishlist', icon: Heart },
+    { name: 'Wallet', to: '/dashboard/wallet', icon: Wallet },
+    { name: 'My Garage', to: '/dashboard/vehicles', icon: Car },
+    { name: 'Training', to: '/dashboard/training', icon: GraduationCap },
+    { name: 'Settings', to: '/dashboard/settings', icon: Settings },
   ];
 
   const adminLinks = [
-    { name: 'Dashboard', to: '/admin', icon: LayoutDashboard },
-    { name: 'Users', to: '/admin/users', icon: Users },
-    { name: 'Cars', to: '/admin/cars', icon: Car },
-    { name: 'Add Car', to: '/myshop/add-car', icon: PlusCircle },
-    { name: 'Employers', to: '/admin/employers', icon: Users },
-    { name: 'Customers', to: '/admin/customers', icon: Users },
-    { name: 'Approvals', to: '/admin/approvals', icon: List },
-    { name: 'Reviews', to: '/admin/reviews', icon: Star },
-    { name: 'Reports', to: '/admin/reports', icon: FileText },
-    { name: 'Settings', to: '/admin/settings', icon: Settings },
+    { name: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
+    { name: 'Manage Users', to: '/dashboard/manage-users', icon: Users },
+    { name: 'Manage Cars', to: '/dashboard/manage-cars', icon: Car },
+    { name: 'Add Car', to: '/dashboard/add-car', icon: PlusCircle },
+    { name: 'Employers', to: '/dashboard/employers', icon: Users },
+    { name: 'Customers', to: '/dashboard/customers', icon: Users },
+    { name: 'Approvals', to: '/dashboard/approvals', icon: List },
+    { name: 'Reviews', to: '/dashboard/reviews', icon: Star },
+    { name: 'Reports', to: '/dashboard/reports', icon: FileText },
+    { name: 'Settings', to: '/dashboard/settings', icon: Settings },
   ];
 
   const navLinks = user?.role === 'admin' ? adminLinks : (user?.role === 'shop_owner' ? shopLinks : customerLinks);
