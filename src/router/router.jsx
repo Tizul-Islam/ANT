@@ -44,6 +44,12 @@ import AddCar from "../page/dashboard/AddCar";
 import MyCars from "../page/dashboard/MyCars";
 import AllCars from "../page/dashboard/AllCars";
 
+// Admin Pages
+import AdminDashboard from "../page/admin/AdminDashboard";
+import AdminUsers from "../page/admin/AdminUsers";
+import AdminCars from "../page/admin/AdminCars";
+import AdminApprovals from "../page/admin/AdminApprovals";
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -108,6 +114,17 @@ export const router = createBrowserRouter([
       { path: "/profile/vehicles", element: <MyGarage /> },
       { path: "/profile/training", element: <ProfileTraining /> },
       { path: "/profile/settings", element: <Settings /> },
+      
+      // Admin Routes
+      { path: "/admin", element: <ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute> },
+      { path: "/admin/users", element: <ProtectedRoute allowedRoles={['admin']}><AdminUsers filterRole="all" /></ProtectedRoute> },
+      { path: "/admin/employers", element: <ProtectedRoute allowedRoles={['admin']}><AdminUsers filterRole="shop_owner" /></ProtectedRoute> },
+      { path: "/admin/customers", element: <ProtectedRoute allowedRoles={['admin']}><AdminUsers filterRole="customer" /></ProtectedRoute> },
+      { path: "/admin/cars", element: <ProtectedRoute allowedRoles={['admin']}><AdminCars /></ProtectedRoute> },
+      { path: "/admin/approvals", element: <ProtectedRoute allowedRoles={['admin']}><AdminApprovals /></ProtectedRoute> },
+      { path: "/admin/reviews", element: <ProtectedRoute allowedRoles={['admin']}><div className="p-8 text-white text-xl">Reviews Module (Coming Soon)</div></ProtectedRoute> },
+      { path: "/admin/reports", element: <ProtectedRoute allowedRoles={['admin']}><div className="p-8 text-white text-xl">Reports Module (Coming Soon)</div></ProtectedRoute> },
+      { path: "/admin/settings", element: <ProtectedRoute allowedRoles={['admin']}><Settings /></ProtectedRoute> },
     ]
   }
 ]);

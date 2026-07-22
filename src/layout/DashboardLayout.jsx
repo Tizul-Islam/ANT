@@ -17,7 +17,9 @@ import {
   GraduationCap,
   PlusCircle,
   List,
-  User
+  User,
+  Star,
+  FileText
 } from 'lucide-react';
 
 export default function DashboardLayout() {
@@ -49,7 +51,20 @@ export default function DashboardLayout() {
     { name: 'Settings', to: '/profile/settings', icon: Settings },
   ];
 
-  const navLinks = user?.role === 'shop_owner' ? shopLinks : customerLinks;
+  const adminLinks = [
+    { name: 'Dashboard', to: '/admin', icon: LayoutDashboard },
+    { name: 'Users', to: '/admin/users', icon: Users },
+    { name: 'Cars', to: '/admin/cars', icon: Car },
+    { name: 'Add Car', to: '/myshop/add-car', icon: PlusCircle },
+    { name: 'Employers', to: '/admin/employers', icon: Users },
+    { name: 'Customers', to: '/admin/customers', icon: Users },
+    { name: 'Approvals', to: '/admin/approvals', icon: List },
+    { name: 'Reviews', to: '/admin/reviews', icon: Star },
+    { name: 'Reports', to: '/admin/reports', icon: FileText },
+    { name: 'Settings', to: '/admin/settings', icon: Settings },
+  ];
+
+  const navLinks = user?.role === 'admin' ? adminLinks : (user?.role === 'shop_owner' ? shopLinks : customerLinks);
 
   return (
     <div className="flex h-screen bg-[#09090b] overflow-hidden font-sans text-white">

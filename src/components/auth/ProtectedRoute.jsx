@@ -20,6 +20,10 @@ export default function ProtectedRoute({
   const user = getCurrentUser();
   const isUserAuthenticated = isAuthenticated();
 
+  // Redirect unauthenticated users to the login page
+  if (!isUserAuthenticated || !user) {
+    return <Navigate to="/auth" replace />;
+  }
 
   // If user is authenticated, check role restrictions
   if (isUserAuthenticated && user) {

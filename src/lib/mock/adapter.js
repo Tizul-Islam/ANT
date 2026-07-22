@@ -24,6 +24,12 @@ export const setupMockAdapter = () => {
   });
 
   // --- Marketplace Endpoints ---
+  mock.onGet('/api/business-settings/').reply(200, {
+    site_name: "ANT Marketplace",
+    currency_symbol: "৳",
+    support_email: "support@ant.com"
+  });
+
   mock.onGet('/products').reply(config => {
     return [200, productsData];
   });
