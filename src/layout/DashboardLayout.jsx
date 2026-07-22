@@ -14,7 +14,10 @@ import {
   Heart,
   Car,
   Wallet,
-  GraduationCap
+  GraduationCap,
+  PlusCircle,
+  List,
+  User
 } from 'lucide-react';
 
 export default function DashboardLayout() {
@@ -27,13 +30,13 @@ export default function DashboardLayout() {
     navigate('/auth');
   };
 
-  // Define navigation based on role
+  // Define navigation based on role (Shop Owner = Employer)
   const shopLinks = [
-    { name: 'Overview', to: '/myshop', icon: LayoutDashboard },
-    { name: 'Products', to: '/myshop/products', icon: Package },
-    { name: 'Orders', to: '/myshop/orders', icon: ShoppingCart },
-    { name: 'Customers', to: '/myshop/customers', icon: Users },
-    { name: 'Settings', to: '/myshop/settings', icon: Settings },
+    { name: 'Dashboard', to: '/myshop', icon: LayoutDashboard },
+    { name: 'Add Car', to: '/myshop/add-car', icon: PlusCircle },
+    { name: 'My Cars', to: '/myshop/my-cars', icon: Car },
+    { name: 'All Cars', to: '/myshop/all-cars', icon: List },
+    { name: 'Profile', to: '/myshop/profile', icon: User },
   ];
 
   const customerLinks = [

@@ -13,21 +13,7 @@ import Auth from "../page/Auth";
 import Profile from "../page/Profile";
 import ProductDetails from "../page/ProductDetails";
 import Myshop from "../page/Myshop";
-import { createBrowserRouter } from "react-router-dom";
-import Root from "../layout/Root";
-import Home from "../page/Home";
-import Product from "../page/Product";
-import Training from "../page/Training";
-import Recharge from "../page/Recharge";
-import Shops from "../page/Shops";
-import ShopDetails from "../page/ShopDetails";
-import ShopProductDetails from "../page/ShopProductDetails";
-import About from "../page/About";
-import Contact from "../page/Contact";
-import Auth from "../page/Auth";
-import Profile from "../page/Profile";
-import ProductDetails from "../page/ProductDetails";
-import Myshop from "../page/Myshop";
+
 import ViewInShop from "../page/ViewInShop";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
 import TermsCon from "../page/TermsCon";
@@ -53,6 +39,10 @@ import MyGarage from "../page/dashboard/MyGarage";
 import ProfileTraining from "../page/dashboard/Training";
 import Settings from "../page/dashboard/Settings";
 import Wishlist from "../page/dashboard/Wishlist";
+
+import AddCar from "../page/dashboard/AddCar";
+import MyCars from "../page/dashboard/MyCars";
+import AllCars from "../page/dashboard/AllCars";
 
 export const router = createBrowserRouter([
   {
@@ -106,6 +96,10 @@ export const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { path: "/myshop", element: <Myshop /> },
+      { path: "/myshop/add-car", element: <AddCar /> },
+      { path: "/myshop/my-cars", element: <MyCars /> },
+      { path: "/myshop/all-cars", element: <AllCars /> },
+      { path: "/myshop/profile", element: <Settings /> },
       { path: "/profile", element: <Profile /> },
       { path: "/profile/orders", element: <Orders /> },
       { path: "/profile/orders/:id", element: <OrderDetails /> },
